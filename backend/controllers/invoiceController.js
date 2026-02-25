@@ -2,6 +2,7 @@ const Invoice = require("../models/Invoice");
 const InvoiceLine = require("../models/InvoiceLine");
 const Payment = require("../models/Payment");
 const generateInvoicePDF = require("../utils/pdfGenerator");
+const checkOverdue = require("../utils/overdueChecker");
 
 exports.getInvoiceDetails = async (req, res) => {
   try {
@@ -112,6 +113,25 @@ exports.getInvoicePDF = async (req, res) => {
         };
 
         generateInvoicePDF(invoiceData, res);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getInvoiceById = async (req, res) => {
+    try {
+        const invoice = await Invoice.findById(req.params.id);
+
+        if (!invoice) {
+            return res.status(404).json({ message: "Invoice not found" });
+        }
+
+        const updatedStatus = checkOverdue(invoice);
+
+        invoice.status = updatedStatus;
+
+        res.json({ invoice });
 
     } catch (err) {
         res.status(500).json({ message: err.message });

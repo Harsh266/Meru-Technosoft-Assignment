@@ -7,8 +7,8 @@ const invoiceSchema = new mongoose.Schema({
   dueDate: Date,
   status: {
     type: String,
-    enum: ["DRAFT", "PAID"],
-    default: "DRAFT"
+    enum: ["PENDING", "PAID", "OVERDUE"],
+    default: "PENDING"
   },
   total: { type: Number, default: 0 },
   amountPaid: { type: Number, default: 0 },
