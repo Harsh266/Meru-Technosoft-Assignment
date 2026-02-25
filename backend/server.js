@@ -17,6 +17,8 @@ if (!MONGO_URI) {
     process.exit(1);
 }
 
+app.use("/api/invoices", require("./routes/invoiceRoutes"));
+
 mongoose.connect(MONGO_URI,{
 })
     .then(() => console.log("✅ MongoDB Connected"))
