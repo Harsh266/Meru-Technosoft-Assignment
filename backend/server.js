@@ -2,9 +2,14 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const http = require("http");
+const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
+
+app.use(cors());
+app.use(express.json());
 
 const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {
@@ -12,7 +17,7 @@ if (!MONGO_URI) {
     process.exit(1);
 }
 
-mongoose.connect(MONGO_URI, {
+mongoose.connect(MONGO_URI,{
 })
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => {
