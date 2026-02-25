@@ -11,7 +11,7 @@ const InvoicePage = () => {
   const invoiceId = "699f31dfa3652920378e9549";
 
   const fetchInvoice = async () => {
-    const res = await fetch(`http://localhost:5000/api/invoices/${invoiceId}`);
+    const res = await fetch(`https://meru-technosoft-assignment.onrender.com/api/invoices/${invoiceId}`);
     const result = await res.json();
     setData(result);
   };
@@ -30,7 +30,7 @@ const InvoicePage = () => {
 
   const handleAddPayment = async () => {
     try {
-      await fetch(`http://localhost:5000/api/invoices/${invoiceId}/payments`, {
+      await fetch(`https://meru-technosoft-assignment.onrender.com/api/invoices/${invoiceId}/payments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: Number(amount) }),
@@ -46,7 +46,7 @@ const InvoicePage = () => {
   const handleDownloadPDF = async () => {
     try {
       setLoadingPDF(true);
-      const res = await fetch(`http://localhost:5000/api/invoices/pdf/${invoiceId}`);
+      const res = await fetch(`https://meru-technosoft-assignment.onrender.com/api/invoices/pdf/${invoiceId}`);
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
