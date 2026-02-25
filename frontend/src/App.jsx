@@ -1,10 +1,7 @@
-import { useState } from 'react'
-import './App.css'
+import InvoicePage from "./pages/InvoicePage";
 
 function App() {
-  return (
-    <h1>Hello World</h1>
-  )
+  return <InvoicePage />;
 }
 
-export default App
+export default App;
