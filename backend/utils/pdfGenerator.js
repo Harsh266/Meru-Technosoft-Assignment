@@ -38,6 +38,8 @@ const generateInvoicePDF = (invoice, res) => {
     doc
         .fontSize(12)
         .text(`Total: ₹${invoice.total}`)
+        .text(`Amount Paid: ₹${invoice.amountPaid}`)
+        .text(`Balance Due: ₹${invoice.balanceDue}`)
         .moveDown();
 
     if (invoice.items && invoice.items.length > 0) {
