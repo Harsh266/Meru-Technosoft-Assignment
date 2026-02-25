@@ -1,6 +1,7 @@
 const Invoice = require("../models/Invoice");
 const InvoiceLine = require("../models/InvoiceLine");
 const Payment = require("../models/Payment");
+const generateInvoicePDF = require("../utils/pdfGenerator");
 
 exports.getInvoiceDetails = async (req, res) => {
   try {
@@ -95,4 +96,24 @@ exports.restoreInvoice = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+};
+
+exports.getInvoicePDF = async (req, res) => {
+    try {
+        const invoice = await Invoice.findById(req.params.id);
+
+        const items = await InvoiceLine.find({
+            invoiceId: invoice._id
+        });
+
+        const invoiceData = {
+            ...invoice.toObject(),
+            items
+        };
+
+        generateInvoicePDF(invoiceData, res);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };

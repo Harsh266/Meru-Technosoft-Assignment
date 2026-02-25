@@ -20,16 +20,13 @@ const InvoicePage = () => {
 
   const handleAddPayment = async () => {
     try {
-      await fetch(
-        `http://localhost:5000/api/invoices/${invoiceId}/payments`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ amount: Number(amount) })
-        }
-      );
+      await fetch(`http://localhost:5000/api/invoices/${invoiceId}/payments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: Number(amount) }),
+      });
 
       setShowModal(false);
       setAmount("");
@@ -39,20 +36,39 @@ const InvoicePage = () => {
     }
   };
 
+  const handleDownloadPDF = async () => {
+  try {
+    const res = await fetch(
+      `http://localhost:5000/api/invoices/pdf/${invoiceId}`
+    );
+
+    const blob = await res.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `invoice_${invoiceId}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.log("PDF download error:", err);
+  }
+};
+
   if (!data) return <div className="p-6">Loading...</div>;
 
   const { invoice, lines, payments, total, amountPaid, balanceDue } = data;
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow p-6">
-
         <div className="flex justify-between items-center border-b pb-4">
           <div>
-            <h1 className="text-2xl font-bold">
-              {invoice.invoiceNumber}
-            </h1>
+            <h1 className="text-2xl font-bold">{invoice.invoiceNumber}</h1>
             <p className="text-gray-600">{invoice.customerName}</p>
           </div>
 
@@ -65,17 +81,18 @@ const InvoicePage = () => {
           >
             {invoice.status}
           </span>
+
+          <button
+            onClick={handleDownloadPDF}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
+          >
+            PDF
+          </button>
         </div>
 
         <div className="flex justify-between text-sm text-gray-500 mt-4">
-          <p>
-            Issue Date:{" "}
-            {new Date(invoice.issueDate).toLocaleDateString()}
-          </p>
-          <p>
-            Due Date:{" "}
-            {new Date(invoice.dueDate).toLocaleDateString()}
-          </p>
+          <p>Issue Date: {new Date(invoice.issueDate).toLocaleDateString()}</p>
+          <p>Due Date: {new Date(invoice.dueDate).toLocaleDateString()}</p>
         </div>
 
         <div className="mt-6">
@@ -97,9 +114,7 @@ const InvoicePage = () => {
                   <td className="p-2">{item.description}</td>
                   <td className="text-center">{item.quantity}</td>
                   <td className="text-center">₹{item.unitPrice}</td>
-                  <td className="text-center font-medium">
-                    ₹{item.lineTotal}
-                  </td>
+                  <td className="text-center font-medium">₹{item.lineTotal}</td>
                 </tr>
               ))}
             </tbody>
@@ -109,9 +124,7 @@ const InvoicePage = () => {
         <div className="mt-6 text-right space-y-1">
           <p>Total: ₹{total}</p>
           <p>Amount Paid: ₹{amountPaid}</p>
-          <p className="text-lg font-bold">
-            Balance Due: ₹{balanceDue}
-          </p>
+          <p className="text-lg font-bold">Balance Due: ₹{balanceDue}</p>
         </div>
 
         <div className="mt-6">
@@ -147,17 +160,12 @@ const InvoicePage = () => {
             ))
           )}
         </div>
-
       </div>
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-
           <div className="bg-white p-6 rounded-lg w-80 shadow-lg">
-
-            <h2 className="text-lg font-semibold mb-4">
-              Add Payment
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">Add Payment</h2>
 
             <input
               type="number"
@@ -182,7 +190,6 @@ const InvoicePage = () => {
                 Add
               </button>
             </div>
-
           </div>
         </div>
       )}
